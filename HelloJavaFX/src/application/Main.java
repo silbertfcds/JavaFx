@@ -65,7 +65,8 @@ public class Main extends Application {
 	}
 
 	/**
-	 * Inicializa o root layout (layout base).
+	 * Inicializa o root layout e tenta carregar o último arquivo de pessoa
+	 * aberto.
 	 */
 	public void initRootLayout() {
 		try {
@@ -74,15 +75,26 @@ public class Main extends Application {
 			loader.setLocation(Main.class.getResource("RootLayout.fxml"));
 			rootLayout = (BorderPane) loader.load();
 
-			// Mostra a scene (cena) contendo oroot layout.
+			// Mostra a scene (cena) contendo o root layout.
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
+
+			// Dá ao controller o acesso ao main app.
+			RootLayoutController controller = loader.getController();
+			controller.setMainApp(this);
+
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
 
+		// Tenta carregar o último arquivo de pessoa aberto.
+		File file = getPersonFilePath();
+		if (file != null) {
+			loadPersonDataFromFile(file);
+		}
+	}
+	
 	/**
 	 * Mostra a person overview dentro do root layout.
 	 */
